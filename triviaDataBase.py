@@ -1,4 +1,5 @@
 import sqlite3
+import random
 from abc import ABC, abstractmethod
 
 
@@ -14,10 +15,10 @@ class TriviaDb(ABC):
     @abstractmethod
     def load_questions(self, difficulty):
         pass
-        
+
     @abstractmethod   
     def close(self):
-    	pass
+        pass
 
 
 class SQLiteTriviaDb(TriviaDb):
@@ -48,6 +49,12 @@ class SQLiteTriviaDb(TriviaDb):
             (difficulty,)
         )
         questions_data = self.cursor.fetchall()
+
+        # Shuffle the questions randomly
+        random.shuffle(questions_data)
+
+        # Return only the first 5 questions
+        questions_data = questions_data[:5]
 
         questions = []
         for question_data in questions_data:
