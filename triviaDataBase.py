@@ -16,8 +16,12 @@ class TriviaDb(ABC):
     def load_questions(self, difficulty):
         pass
 
-    @abstractmethod   
+    @abstractmethod
     def close(self):
+        pass
+
+    @abstractmethod
+    def get_last_question_id(self):
         pass
 
 
@@ -34,44 +38,54 @@ class SQLiteTriviaDb(TriviaDb):
 
     def insert_question(self, question, answers, correct_answer, difficulty):
         try:
+            last_id = self.get_last_question_id() + 1
+            print(last_id)
             self.cursor.execute(
-                "INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, difficulty) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (question, answers[0], answers[1], answers[2], answers[3], correct_answer, difficulty)
+                "INSERT INTO questions (id, question, answer1, answer2, answer3, answer4, correct_answer, difficulty) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (last_id, question, answers[0], answers[1],
+                 answers[2], answers[3], correct_answer, difficulty)
             )
             self.conn.commit()
             return True
         except sqlite3.Error:
             return False
 
-    def load_questions(self, difficulty):
-        self.cursor.execute(
-            "SELECT question, answer1, answer2, answer3, answer4, correct_answer FROM questions WHERE difficulty=?",
-            (difficulty,)
-        )
-        questions_data = self.cursor.fetchall()
-
-        # Shuffle the questions randomly
-        random.shuffle(questions_data)
-
-        # Return only the first 5 questions
-        questions_data = questions_data[:5]
-
+    def load_questions(self, difficulty, num_questions=5):
+        chosen_questions = set()
         questions = []
-        for question_data in questions_data:
-            question = {
-                "question": question_data[0],
-                "answers": [
-                    question_data[1],
-                    question_data[2],
-                    question_data[3],
-                    question_data[4],
-                ],
-                "correct_answer": question_data[5],
-            }
-            questions.append(question)
+
+        while len(questions) < num_questions:
+            self.cursor.execute(
+                "SELECT id, question, answer1, answer2, answer3, answer4, correct_answer FROM questions WHERE difficulty=? ORDER BY RANDOM() LIMIT 1",
+                (difficulty,)
+            )
+            question_data = self.cursor.fetchone()
+
+            question_id = question_data[0]
+            if question_id not in chosen_questions:
+                chosen_questions.add(question_id)
+
+                question = {
+                    "question": question_data[1],
+                    "answers": [
+                        question_data[2],
+                        question_data[3],
+                        question_data[4],
+                        question_data[5],
+                    ],
+                    "correct_answer": question_data[6],
+                }
+                questions.append(question)
 
         return questions
 
+    def get_last_question_id(self):
+        conn = sqlite3.connect("trivia.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT MAX(id) FROM questions")
+        last_id = cursor.fetchone()[0]
+        conn.close()
+        return last_id if last_id is not None else 0
+
     def close(self):
         self.conn.close()
-

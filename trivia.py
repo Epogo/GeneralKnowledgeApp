@@ -32,7 +32,7 @@ class TriviaGame:
         self.controller.set_num_of_questions(len(self.questions))
         self.window = tk.Tk()
         self.window.title("Trivia Game")
-        self.window.geometry("400x300")
+        self.window.geometry("500x400")
 
         self.question_label = tk.Label(self.window, text="")
         self.question_label.pack(pady=10)
@@ -158,6 +158,7 @@ class TriviaGame:
     def close_game(self):
         if self.timer_id is not None:
             self.window.after_cancel(self.timer_id)
+        del self.controller
         self.window.destroy()
 
     def on_button_enter(self, event):

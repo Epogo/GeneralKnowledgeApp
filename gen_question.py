@@ -1,10 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 import os
-import subprocess
 from triviaDataBase import SQLiteTriviaDb
 from gen_db import new_questions_db
-
 
 class QuestionGenerator:
     def __init__(self, controller):
@@ -119,7 +117,7 @@ class QuestionGenerator:
 
         # Insert the question into the database
         if self.trivia_db.insert_question(
-                question, answers, correct_answer, difficulty):
+			question, answers, correct_answer, difficulty):
             # Clear the input fields
             self.question_entry.delete(0, tk.END)
             for entry in self.answer_entries:
@@ -138,7 +136,6 @@ class QuestionGenerator:
     def close_window(self):
         self.window.destroy()
         self.controller.module_selector("login")
-
 
 if __name__ == "__main__":
     class MainController:

@@ -2,10 +2,29 @@ import tkinter as tk
 from menu import open_menu
 from gen_question import QuestionGenerator
 from usersDataBase import SQLiteUsersDb
+import pygame
+import threading
 
+class MusicPlayer(threading.Thread):
+    def __init__(self):
+        super().__init__()
+        self.daemon = True
+
+    def run(self):
+
+        # Load and play the background music
+        pygame.mixer.music.load("music.mp3")
+        pygame.mixer.music.play(-1)  # -1 means play the music on loop
+
+        while True:
+            # Keep the thread alive to continue playing the music
+            continue
 
 class MainController:
     def __init__(self, username=None, score=None, level=None):
+        # Initialize pygame and mixer
+        pygame.init()
+        pygame.mixer.init()
         self.username = username
         self.level = level
         self.score = score
@@ -13,8 +32,15 @@ class MainController:
         self.best_score = 0
         self.users_db = SQLiteUsersDb()
 
+    def start_music_thread(self):
+        music_thread = MusicPlayer()
+        music_thread.start()
+
     def __del__(self):
-        self.users_db.close()
+        # Stop the music and quit pygame when the controller is deleted
+        pygame.mixer.music.stop()
+        pygame.mixer.quit()
+        pygame.quit()
 
     def start(self):
         from app import launch_game
@@ -64,4 +90,6 @@ class MainController:
 
 if __name__ == "__main__":
     main_controller = MainController()
+    main_controller.start_music_thread()
     main_controller.start()
+

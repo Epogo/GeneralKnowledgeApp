@@ -1,0 +1,108 @@
+[
+    {
+        "id": 1,
+        "question": "What is the capital of France?",
+        "answers": ["Paris", "London", "Berlin", "Madrid"],
+        "correct_answer": 0,
+        "difficulty": "Easy"
+    },
+    {
+        "id": 2,
+        "question": "Who painted the Mona Lisa?",
+        "answers": ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Claude Monet"],
+        "correct_answer": 1,
+        "difficulty": "Easy"
+    },
+    {
+        "id": 3,
+        "question": "What is the symbol for hydrogen?",
+        "answers": ["H", "He", "O", "C"],
+        "correct_answer": 0,
+        "difficulty": "Easy"
+    },
+    {
+        "id": 4,
+        "question": "What is the largest planet in our solar system?",
+        "answers": ["Earth", "Saturn", "Jupiter", "Mars"],
+        "correct_answer": 2,
+        "difficulty": "Easy"
+    },
+    {
+        "id": 5,
+        "question": "What is the square root of 16?",
+        "answers": ["2", "4", "6", "8"],
+        "correct_answer": 1,
+        "difficulty": "Easy"
+    },
+    {
+        "id": 6,
+        "question": "Which country hosted the 2016 Summer Olympics?",
+        "answers": ["United States", "China", "Brazil", "Australia"],
+        "correct_answer": 2,
+        "difficulty": "Medium"
+    },
+    {
+        "id": 7,
+        "question": "Who wrote the novel 'To Kill a Mockingbird'?",
+        "answers": ["Harper Lee", "J.D. Salinger", "George Orwell", "Mark Twain"],
+        "correct_answer": 0,
+        "difficulty": "Medium"
+    },
+    {
+        "id": 8,
+        "question": "What is the chemical formula for water?",
+        "answers": ["H2O", "CO2", "NaCl", "C6H12O6"],
+        "correct_answer": 0,
+        "difficulty": "Medium"
+    },
+    {
+        "id": 9,
+        "question": "Which scientist developed the theory of general relativity?",
+        "answers": ["Isaac Newton", "Albert Einstein", "Niels Bohr", "Marie Curie"],
+        "correct_answer": 1,
+        "difficulty": "Medium"
+    },
+    {
+        "id": 10,
+        "question": "What is the tallest mountain in Africa?",
+        "answers": ["Mount Everest", "Mount Kilimanjaro", "Mount McKinley", "Mount Fuji"],
+        "correct_answer": 1,
+        "difficulty": "Medium"
+    },
+    {
+        "id": 11,
+        "question": "In which year was the World Wide Web invented?",
+        "answers": ["1989", "1995", "2001", "1975"],
+        "correct_answer": 0,
+        "difficulty": "Hard"
+    },
+    {
+        "id": 12,
+        "question": "Who discovered penicillin?",
+        "answers": ["Alexander Fleming", "Marie Curie", "Thomas Edison", "Louis Pasteur"],
+        "correct_answer": 0,
+        "difficulty": "Hard"
+    },
+    {
+        "id": 13,
+        "question": "What is the unit of measurement for electric current?",
+        "answers": ["Volt", "Ohm", "Watt", "Ampere"],
+        "correct_answer": 3,
+        "difficulty": "Hard"
+    },
+    {
+        "id": 14,
+        "question": "Which element has the atomic number 79?",
+        "answers": ["Iron", "Copper", "Gold", "Silver"],
+        "correct_answer": 2,
+        "difficulty": "Hard"
+    },
+    {
+        "id": 15,
+        "question": "Who painted the 'Sistine Chapel Ceiling'?",
+        "answers": ["Michelangelo", "Leonardo da Vinci", "Raphael", "Donatello"],
+        "correct_answer": 0,
+        "difficulty": "Hard"
+    }
+]
+
