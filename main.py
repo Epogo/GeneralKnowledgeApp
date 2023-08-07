@@ -2,6 +2,7 @@ import tkinter as tk
 from menu import open_menu
 from gen_question import QuestionGenerator
 from usersDataBase import SQLiteUsersDb
+from usersDataBase import FireBaseUsersDb
 import pygame
 import threading
 
@@ -30,7 +31,7 @@ class MainController:
         self.score = score
         self.num_of_questions = 0
         self.best_score = 0
-        self.users_db = SQLiteUsersDb()
+        self.users_db = FireBaseUsersDb()
 
     def start_music_thread(self):
         music_thread = MusicPlayer()

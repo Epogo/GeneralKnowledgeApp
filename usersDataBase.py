@@ -1,6 +1,7 @@
 import sqlite3
 from abc import ABC, abstractmethod
-
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 class UsersDb(ABC):
     @abstractmethod
@@ -26,11 +27,10 @@ class UsersDb(ABC):
     @abstractmethod
     def get_best_score(self, username: str) -> int:
         pass
-        
-    @abstractmethod   
-    def close(self) -> bool:
-    	pass
 
+    @abstractmethod
+    def close(self) -> bool:
+        pass
 
 class SQLiteUsersDb(UsersDb):
     def __init__(self):
@@ -48,7 +48,7 @@ class SQLiteUsersDb(UsersDb):
         if not admin_user:
             # Add the admin user to the database
             self.cursor.execute("INSERT INTO users VALUES (?, ?, 0, 1)",
-                           ("admin", "go1234"))
+                                ("admin", "go1234"))
         self.conn.commit()
 
     def create_user(self, username: str, password: str) -> bool:
@@ -98,3 +98,55 @@ class SQLiteUsersDb(UsersDb):
 
     def close(self):
         self.conn.close()
+
+class FireBaseUsersDb(UsersDb):
+    _initialized = False  # Class-level flag to track initialization
+
+    def __init__(self):
+        if not FireBaseUsersDb._initialized:  # Check if not already initialized
+            cred = credentials.Certificate("knowledgequiz.json")
+            firebase_admin.initialize_app(cred)
+            FireBaseUsersDb._initialized = True  # Set the flag
+
+        self.db = firestore.client()
+
+    def create_user_table(self):
+        # Not needed in Firestore
+        pass
+
+    def create_user(self, username: str, password: str) -> bool:
+        user_ref = self.db.collection('users').document(username)
+        user_ref.set({
+            "username": username,
+            "password": password,
+            "best_score": 0,
+            "is_admin": False
+        })
+        print("Hello there!")
+        return True
+
+    def get_user(self, username: str) -> dict:
+        user_ref = self.db.collection('users').document(username)
+        user_doc = user_ref.get()
+        if user_doc.exists:
+            return user_doc.to_dict()
+        else:
+            return None
+
+    def is_admin(self, username: str) -> bool:
+        user = self.get_user(username)
+        return user['is_admin'] if user else False
+
+    def update_best_score(self, username: str, score: int) -> bool:
+        user_ref = self.db.collection('users').document(username)
+        user_ref.update({"best_score": score})
+        return True
+
+    def get_best_score(self, username: str) -> int:
+        user = self.get_user(username)
+        return user['best_score'] if user else 0
+
+    def close(self) -> bool:
+        # No need to close Firestore connection
+        pass
+

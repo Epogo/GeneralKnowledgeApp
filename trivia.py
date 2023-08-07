@@ -2,6 +2,7 @@ import tkinter as tk
 import random
 from triviaDataBase import SQLiteTriviaDb
 from usersDataBase import SQLiteUsersDb
+from usersDataBase import FireBaseUsersDb
 from main import MainController
 
 
@@ -20,7 +21,7 @@ class TriviaGame:
         self.score_window = None
         self.controller = controller
         self.trivia_db = SQLiteTriviaDb()
-        self.users_db = SQLiteUsersDb()
+        self.users_db = FireBaseUsersDb()
         
     def __del__(self):
     	self.trivia_db.close()

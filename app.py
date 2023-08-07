@@ -1,12 +1,13 @@
 import tkinter as tk
 from tkinter import messagebox
 from usersDataBase import SQLiteUsersDb
+from usersDataBase import FireBaseUsersDb
 from gen_question import QuestionGenerator
 from main import MainController
 
 
 def create_user_table():
-    users_db = SQLiteUsersDb()
+    users_db = FireBaseUsersDb()
     users_db.create_user_table()
 
 
@@ -20,7 +21,6 @@ def sign_up():
             fg="red")
         return
 
-    users_db = SQLiteUsersDb()
     user = users_db.get_user(username)
 
     if user:
@@ -47,7 +47,6 @@ def login():
             fg="red")
         return
 
-    users_db = SQLiteUsersDb()
     user = users_db.get_user(username)
 
     if user and user['password'] == password:
@@ -80,6 +79,8 @@ def proceed(username, best_score, is_admin):
 def launch_game():
     # Create the main window
     global window
+    global users_db
+    users_db = FireBaseUsersDb()
     window = tk.Tk()
     window.title("Login/Sign-up App")
     window.geometry("400x350")
