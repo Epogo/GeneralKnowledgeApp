@@ -1,4 +1,6 @@
 import sqlite3
+import firebase_admin
+from firebase_admin import credentials, firestore
 import random
 from abc import ABC, abstractmethod
 
@@ -89,3 +91,5 @@ class SQLiteTriviaDb(TriviaDb):
 
     def close(self):
         self.conn.close()
+        
+

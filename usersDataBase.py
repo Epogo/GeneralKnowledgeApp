@@ -103,17 +103,34 @@ class FireBaseUsersDb(UsersDb):
     _initialized = False  # Class-level flag to track initialization
 
     def __init__(self):
-        if not FireBaseUsersDb._initialized:  # Check if not already initialized
+        if not FireBaseUsersDb._initialized:
             cred = credentials.Certificate("knowledgequiz.json")
             firebase_admin.initialize_app(cred)
-            FireBaseUsersDb._initialized = True  # Set the flag
+            FireBaseUsersDb._initialized = True
 
         self.db = firestore.client()
+
+        # Check if admin user already exists
+        admin_ref = self.db.collection('users').document('admin')
+        admin_doc = admin_ref.get()
+
+        if not admin_doc.exists:
+            self.create_admin_user("admin", "go1234")
 
     def create_user_table(self):
         # Not needed in Firestore
         pass
 
+    def create_admin_user(self, username, password):
+        admin_ref = self.db.collection('users').document('admin')
+        admin_ref.set({
+            "username": username,
+            "password": password,
+            "best_score": 0,
+            "is_admin": True
+        })
+        print("admin user has been created")
+		
     def create_user(self, username: str, password: str) -> bool:
         user_ref = self.db.collection('users').document(username)
         user_ref.set({
@@ -122,7 +139,6 @@ class FireBaseUsersDb(UsersDb):
             "best_score": 0,
             "is_admin": False
         })
-        print("Hello there!")
         return True
 
     def get_user(self, username: str) -> dict:
