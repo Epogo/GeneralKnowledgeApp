@@ -90,20 +90,7 @@ class QuestionGenerator:
             self.erase_database_and_generate_questions()
 
     def erase_database_and_generate_questions(self):
-        # Close the current database connection
-        self.trivia_db.close()
-
-        # Delete the trivia.db file if it exists
-        if os.path.exists("trivia.db"):
-            os.remove("trivia.db")
-            messagebox.showinfo("Success", "Trivia database erased.")
-
-        # Generate new questions using new_questions_db function
-        new_questions_db()
-        messagebox.showinfo("Success", "New questions generated.")
-
-        # Reconnect to the database
-        self.trivia_db = SQLiteTriviaDb()
+        self.trivia_db.erase_database_and_generate_questions()
 
     def add_question(self):
         question = self.question_entry.get()
@@ -118,7 +105,7 @@ class QuestionGenerator:
 
         # Insert the question into the database
         if self.trivia_db.insert_question(
-			question, answers, correct_answer, difficulty):
+            question, answers, correct_answer, difficulty):
             # Clear the input fields
             self.question_entry.delete(0, tk.END)
             for entry in self.answer_entries:

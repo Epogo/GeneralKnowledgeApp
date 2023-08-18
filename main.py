@@ -22,10 +22,13 @@ class MusicPlayer(threading.Thread):
             continue
 
 class MainController:
+    mixer_initialized = False  # Class-level variable to track mixer initialization
+
     def __init__(self, username=None, score=None, level=None):
-        # Initialize pygame and mixer
         pygame.init()
-        pygame.mixer.init()
+        if not MainController.mixer_initialized:
+            pygame.mixer.init()
+            MainController.mixer_initialized = True
         self.username = username
         self.level = level
         self.score = score
@@ -39,9 +42,11 @@ class MainController:
 
     def __del__(self):
         # Stop the music and quit pygame when the controller is deleted
-        pygame.mixer.music.stop()
-        pygame.mixer.quit()
-        pygame.quit()
+        if MainController.mixer_initialized:
+            pygame.mixer.music.stop()
+            pygame.mixer.quit()
+            MainController.mixer_initialized = False
+            pygame.quit()
 
     def start(self):
         from app import launch_game

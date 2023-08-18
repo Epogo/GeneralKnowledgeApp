@@ -2,9 +2,11 @@ import sqlite3
 import firebase_admin
 from firebase_admin import credentials, firestore
 import random
+import os
+from tkinter import messagebox
 from abc import ABC, abstractmethod
 from firebaseFactory import firebase_factory
-
+from firebaseDbCreator import generateNewFb# Import the module where new_questions_db function is defined
 
 class TriviaDb(ABC):
     @abstractmethod
@@ -27,6 +29,9 @@ class TriviaDb(ABC):
     def get_last_question_id(self):
         pass
 
+    @abstractmethod
+    def erase_database_and_generate_questions(self):
+        pass
 
 class SQLiteTriviaDb(TriviaDb):
     def __init__(self):
@@ -42,7 +47,6 @@ class SQLiteTriviaDb(TriviaDb):
     def insert_question(self, question, answers, correct_answer, difficulty):
         try:
             last_id = self.get_last_question_id() + 1
-            print(last_id)
             self.cursor.execute(
                 "INSERT INTO questions (id, question, answer1, answer2, answer3, answer4, correct_answer, difficulty) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                 (last_id, question, answers[0], answers[1],
@@ -89,13 +93,24 @@ class SQLiteTriviaDb(TriviaDb):
         last_id = cursor.fetchone()[0]
         conn.close()
         return last_id if last_id is not None else 0
+    
+    def erase_database_and_generate_questions(self):
+        self.close()
+        # Delete the trivia.db file if it exists
+        if os.path.exists("trivia.db"):
+            os.remove("trivia.db")
+            messagebox.showinfo("Success", "Trivia database erased.")
+
+        # Generate new questions using new_questions_db function
+        new_questions_db()
+        messagebox.showinfo("Success", "New questions generated.")
+        self.conn = sqlite3.connect("trivia.db")
+        self.cursor = self.conn.cursor()
 
     def close(self):
         self.conn.close()
 
-
 class FirebaseTriviaDb(TriviaDb):
-
     def __init__(self):
         self.db = firebase_factory.get_firestore_client()
 
@@ -145,6 +160,16 @@ class FirebaseTriviaDb(TriviaDb):
         questions_ref = self.db.collection('questions').stream()
         question_ids = [int(q.id) for q in questions_ref]
         return max(question_ids) if question_ids else 0
+
+    def erase_database_and_generate_questions(self):
+        collection_ref = self.db.collection('questions')
+        docs = collection_ref.stream()
+
+        for doc in docs:
+            doc.reference.delete()
+        
+        generateNewFb()
+        messagebox.showinfo("Success", "New questions generated.")
 
     def close(self):
         # Firebase Admin SDK does not require explicit close
