@@ -3,6 +3,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import random
 from abc import ABC, abstractmethod
+from firebaseFactory import firebase_factory
 
 
 class TriviaDb(ABC):
@@ -91,5 +92,61 @@ class SQLiteTriviaDb(TriviaDb):
 
     def close(self):
         self.conn.close()
-        
+
+
+class FirebaseTriviaDb(TriviaDb):
+
+    def __init__(self):
+        self.db = firebase_factory.get_firestore_client()
+
+    def create_trivia_table(self):
+        # Firebase Firestore does not require explicit table creation
+        pass
+
+    def insert_question(self, question, answers, correct_answer, difficulty):
+        try:
+            last_id = self.get_last_question_id() + 1
+            question_ref = self.db.collection(
+                'questions').document(str(last_id))
+            question_ref.set({
+                "question": question,
+                "answers": answers,
+                "correct_answer": correct_answer,
+                "difficulty": difficulty
+            })
+            return True
+        except Exception as e:
+            return False
+
+    def load_questions(self, difficulty, num_questions=5):
+        questions_ref = self.db.collection('questions').where(
+            'difficulty', '==', difficulty).stream()
+        all_questions = [q.to_dict() for q in questions_ref]
+
+        chosen_questions = random.sample(all_questions, num_questions)
+        questions = []
+
+        for question_data in chosen_questions:
+            question = {
+                "question": question_data["question"],
+                "answers": [
+                    question_data["answer1"],
+                    question_data["answer2"],
+                    question_data["answer3"],
+                    question_data["answer4"],
+                ],
+                "correct_answer": question_data["correct_answer"],
+            }
+            questions.append(question)
+
+        return questions
+
+    def get_last_question_id(self):
+        questions_ref = self.db.collection('questions').stream()
+        question_ids = [int(q.id) for q in questions_ref]
+        return max(question_ids) if question_ids else 0
+
+    def close(self):
+        # Firebase Admin SDK does not require explicit close
+        pass
 

@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import os
 from triviaDataBase import SQLiteTriviaDb
+from triviaDataBase import FirebaseTriviaDb
 from gen_db import new_questions_db
 
 class QuestionGenerator:
@@ -16,7 +17,7 @@ class QuestionGenerator:
         self.answer_entries = []
         self.correct_answer_var = None
         self.difficulty_var = None
-        self.trivia_db = SQLiteTriviaDb()
+        self.trivia_db = FirebaseTriviaDb()
 
         self.create_widgets()
 

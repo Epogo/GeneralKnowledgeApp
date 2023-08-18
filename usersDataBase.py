@@ -2,6 +2,7 @@ import sqlite3
 from abc import ABC, abstractmethod
 import firebase_admin
 from firebase_admin import credentials, firestore
+from firebaseFactory import firebase_factory
 
 class UsersDb(ABC):
     @abstractmethod
@@ -103,12 +104,7 @@ class FireBaseUsersDb(UsersDb):
     _initialized = False  # Class-level flag to track initialization
 
     def __init__(self):
-        if not FireBaseUsersDb._initialized:
-            cred = credentials.Certificate("knowledgequiz.json")
-            firebase_admin.initialize_app(cred)
-            FireBaseUsersDb._initialized = True
-
-        self.db = firestore.client()
+        self.db = firebase_factory.get_firestore_client()
 
         # Check if admin user already exists
         admin_ref = self.db.collection('users').document('admin')

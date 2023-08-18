@@ -1,6 +1,7 @@
 import tkinter as tk
 import random
 from triviaDataBase import SQLiteTriviaDb
+from triviaDataBase import FirebaseTriviaDb
 from usersDataBase import SQLiteUsersDb
 from usersDataBase import FireBaseUsersDb
 from main import MainController
@@ -20,7 +21,7 @@ class TriviaGame:
         self.username = username
         self.score_window = None
         self.controller = controller
-        self.trivia_db = SQLiteTriviaDb()
+        self.trivia_db = FirebaseTriviaDb()
         self.users_db = FireBaseUsersDb()
         
     def __del__(self):
@@ -60,6 +61,7 @@ class TriviaGame:
     def next_question(self):
         if self.current_question_index < self.controller.get_num_of_questions():
             question = self.questions[self.current_question_index]
+
             answers = question["answers"]
 
             self.question_label.config(text=question["question"])

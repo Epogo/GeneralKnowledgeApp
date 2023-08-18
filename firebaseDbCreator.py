@@ -1,13 +1,10 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
+from firebaseFactory import firebase_factory
 import json
 
-# Initialize Firebase
-cred = credentials.Certificate("knowledgequiz.json")
-firebase_admin.initialize_app(cred)
-
-# Connect to Firestore
-db = firestore.client()
+# Get firebase instance.
+db = firebase_factory.get_firestore_client()
 
 # Read questions from the JSON file
 with open("questions.json", "r") as json_file:
