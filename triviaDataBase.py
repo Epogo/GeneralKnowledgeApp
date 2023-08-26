@@ -124,8 +124,12 @@ class FirebaseTriviaDb(TriviaDb):
             question_ref = self.db.collection(
                 'questions').document(str(last_id))
             question_ref.set({
+            	"id": last_id,
                 "question": question,
-                "answers": answers,
+                "answer1": answers[0],
+                "answer2": answers[1],
+                "answer3": answers[2],
+                "answer4": answers[3],
                 "correct_answer": correct_answer,
                 "difficulty": difficulty
             })
@@ -174,4 +178,3 @@ class FirebaseTriviaDb(TriviaDb):
     def close(self):
         # Firebase Admin SDK does not require explicit close
         pass
-
